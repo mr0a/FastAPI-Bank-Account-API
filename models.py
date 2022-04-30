@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from xmlrpc.client import Boolean
 from pydantic import BaseModel
 
@@ -22,7 +22,7 @@ class AdaptedModel(BaseModel):
 class UserBase(BaseModel):
     first_name: str
     last_name: str
-    mobile_number: int
+    mobile_number: str
     country_code: int
 
 
@@ -31,6 +31,9 @@ class UserDB(UserBase):
     verified: Boolean
     created_at: datetime
 
+    class Config:
+        orm_mode = True
+
 
 class UserPublic(BaseModel):
     id: int
@@ -38,20 +41,23 @@ class UserPublic(BaseModel):
 
 
 class VerifyUser(BaseModel):
-    uid: int
+    user: int
     code: int
 
 
 class VerifyDB(VerifyUser):
     expiry: datetime
 
+    class Config:
+        orm_mode = True
 
 
 class BankDetails(AdaptedModel):
+    user: int
     first_name: str
     last_name: str
     father_name: str
-    date_of_birth: str
+    date_of_birth: date
     permanent_address: str
     current_address: str
 
@@ -59,3 +65,6 @@ class BankDetails(AdaptedModel):
 class BankDetailsDB(BankDetails):
     id: int
     created_at: datetime
+
+    class Config:
+        orm_mode = True
